@@ -1,0 +1,19 @@
+.pio/build/disco_f429zi/FrameworkMbedstorage/blockdevice/source/SFDP.o: \
+ /Users/dowonyang/.platformio/packages/framework-mbed/storage/blockdevice/source/SFDP.cpp \
+ .pio/build/disco_f429zi/mbed_config.h \
+ /Users/dowonyang/.platformio/packages/framework-mbed/platform/include/platform/mbed_error.h \
+ /Users/dowonyang/.platformio/packages/framework-mbed/platform/include/platform/mbed_retarget.h \
+ /Users/dowonyang/.platformio/packages/framework-mbed/platform/include/platform/mbed_toolchain.h \
+ /Users/dowonyang/.platformio/packages/framework-mbed/platform/include/platform/mbed_preprocessor.h \
+ /Users/dowonyang/.platformio/packages/framework-mbed/storage/blockdevice/include/blockdevice/internal/SFDP.h \
+ /Users/dowonyang/.platformio/packages/framework-mbed/storage/blockdevice/include/blockdevice/BlockDevice.h \
+ /Users/dowonyang/.platformio/packages/framework-mbed/platform/include/platform/Callback.h \
+ /Users/dowonyang/.platformio/packages/framework-mbed/platform/cxxsupport/mstd_cstddef \
+ /Users/dowonyang/.platformio/packages/framework-mbed/platform/cxxsupport/mstd_new \
+ /Users/dowonyang/.platformio/packages/framework-mbed/platform/include/platform/mbed_assert.h \
+ /Users/dowonyang/.platformio/packages/framework-mbed/platform/cxxsupport/mstd_type_traits \
+ /Users/dowonyang/.platformio/packages/framework-mbed/platform/cxxsupport/mstd_functional \
+ /Users/dowonyang/.platformio/packages/framework-mbed/platform/cxxsupport/mstd_memory \
+ /Users/dowonyang/.platformio/packages/framework-mbed/platform/cxxsupport/mstd_utility \
+ /Users/dowonyang/.platformio/packages/framework-mbed/platform/cxxsupport/mstd_iterator \
+ /Users/dowonyang/.platformio/packages/framework-mbed/platform/mbed-trace/include/mbed-trace/mbed_trace.h

@@ -1,0 +1,26 @@
+.pio/build/disco_f429zi/FrameworkMbeddrivers/usb/source/USBDevice.o: \
+ /Users/dowonyang/.platformio/packages/framework-mbed/drivers/usb/source/USBDevice.cpp \
+ .pio/build/disco_f429zi/mbed_config.h \
+ /Users/dowonyang/.platformio/packages/framework-mbed/drivers/usb/include/usb/internal/USBDevice.h \
+ /Users/dowonyang/.platformio/packages/framework-mbed/drivers/usb/include/usb/internal/USBDevice_Types.h \
+ /Users/dowonyang/.platformio/packages/framework-mbed/hal/usb/include/usb/USBPhy.h \
+ /Users/dowonyang/.platformio/packages/framework-mbed/hal/usb/include/usb/USBPhyTypes.h \
+ /Users/dowonyang/.platformio/packages/framework-mbed/hal/usb/include/usb/USBPhyEvents.h \
+ /Users/dowonyang/.platformio/packages/framework-mbed/platform/include/platform/mbed_critical.h \
+ /Users/dowonyang/.platformio/packages/framework-mbed/platform/include/platform/Callback.h \
+ /Users/dowonyang/.platformio/packages/framework-mbed/platform/cxxsupport/mstd_cstddef \
+ /Users/dowonyang/.platformio/packages/framework-mbed/platform/cxxsupport/mstd_new \
+ /Users/dowonyang/.platformio/packages/framework-mbed/platform/include/platform/mbed_assert.h \
+ /Users/dowonyang/.platformio/packages/framework-mbed/platform/include/platform/mbed_toolchain.h \
+ /Users/dowonyang/.platformio/packages/framework-mbed/platform/include/platform/mbed_preprocessor.h \
+ /Users/dowonyang/.platformio/packages/framework-mbed/platform/cxxsupport/mstd_type_traits \
+ /Users/dowonyang/.platformio/packages/framework-mbed/platform/cxxsupport/mstd_functional \
+ /Users/dowonyang/.platformio/packages/framework-mbed/platform/cxxsupport/mstd_memory \
+ /Users/dowonyang/.platformio/packages/framework-mbed/platform/cxxsupport/mstd_utility \
+ /Users/dowonyang/.platformio/packages/framework-mbed/platform/cxxsupport/mstd_iterator \
+ /Users/dowonyang/.platformio/packages/framework-mbed/drivers/usb/include/usb/internal/USBDescriptor.h \
+ /Users/dowonyang/.platformio/packages/framework-mbed/hal/usb/include/usb/usb_phy_api.h \
+ /Users/dowonyang/.platformio/packages/framework-mbed/hal/usb/include/usb/USBPhy.h \
+ /Users/dowonyang/.platformio/packages/framework-mbed/platform/include/platform/mbed_assert.h \
+ /Users/dowonyang/.platformio/packages/framework-mbed/platform/include/platform/mbed_error.h \
+ /Users/dowonyang/.platformio/packages/framework-mbed/platform/include/platform/mbed_retarget.h
