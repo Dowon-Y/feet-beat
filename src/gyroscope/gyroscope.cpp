@@ -82,7 +82,7 @@ void readGyro() {
 void calcualteDistance() {
     // TODO: implement this
     for (int i = 0; i < (int)REQUIRED_IDX; i++) {
-        printf("%d: \tgx: %d \t gy: %d \t gz: %d\n", i, x_samples[i], y_samples[i], z_samples[i]);
+        printf("%4.5f: \tgx: %4.5f \t gy: %4.5f \t gz: %4.5f\n", i, x_samples[i], y_samples[i], z_samples[i]);
     }
 }
 
