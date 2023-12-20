@@ -1,14 +1,20 @@
 #include <mbed.h>
 
-enum Status {
+enum Stage {
     IDLE,
     SAMPLING,
     CALCULATION,
     FINISHED
 };
 
+/* button */
 bool blueButtonPressed();
-void handleIdleStatus(uint8_t &status);
-void handleSamplingStatus(uint8_t &status);
-void handleCalculationStatus(uint8_t &status);
-void handleFinishedStatus(uint8_t &status);
+void handleIdleStage(uint8_t &stage);
+void handleSamplingStage(uint8_t &stage);
+void handleCalculationStage(uint8_t &stage);
+void handleFinishedStage(uint8_t &stage);
+
+/* gyroscope */
+void initGyro();
+void readGyro();
+void calcualteDistance();

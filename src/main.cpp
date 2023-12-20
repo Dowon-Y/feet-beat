@@ -7,19 +7,19 @@ int main() {
 	while(true) {
 		switch(systemSatus) {
 			case IDLE:
-				handleIdleStatus(systemSatus);
+				handleIdleStage(systemSatus);
 				break;
 			case SAMPLING:
-				handleSamplingStatus(systemSatus);
+				handleSamplingStage(systemSatus);
 				break;
 			case CALCULATION:
-				handleCalculationStatus(systemSatus);
+				handleCalculationStage(systemSatus);
 				break;
 			case FINISHED:
-				handleFinishedStatus(systemSatus);
+				handleFinishedStage(systemSatus);
 				break;
 			default:
-				handleIdleStatus(systemSatus);
+				handleIdleStage(systemSatus);
 				break;
 		}
 		ThisThread::sleep_for(500ms);
