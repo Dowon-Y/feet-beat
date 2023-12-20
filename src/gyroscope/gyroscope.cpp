@@ -23,16 +23,16 @@ SPI spi(PF_9, PF_8, PF_7,PC_1,use_gpio_ssel); // mosi, miso, sclk, cs
 
 #define SAMPLING_DURATION 20
 #define INTERVAL 0.5
-#define REQUIRED_IDX (SAMPLING_DURATION/INTERVAL)
+#define REQUIRED_IDX (int)(SAMPLING_DURATION/INTERVAL)
 
 uint8_t write_buf[32]; 
 uint8_t read_buf[32];
 
 EventFlags flags;
 
-float x_samples[(int)REQUIRED_IDX];
-float y_samples[(int)REQUIRED_IDX];
-float z_samples[(int)REQUIRED_IDX];
+float x_samples[REQUIRED_IDX];
+float y_samples[REQUIRED_IDX];
+float z_samples[REQUIRED_IDX];
 
 // callback for spi.transfer()
 void spi_cb(int event){
@@ -59,7 +59,7 @@ void readGyro() {
     //prepare the write buffer to trigger a sequential read
     write_buf[0]=OUT_X_L|0x80|0x40;
 
-    for (int i = 0; i < (int)REQUIRED_IDX; i++) {
+    for (int i = 0; i < REQUIRED_IDX; i++) {
         // each iteration takes about 0.5 to sample the angular velocities
         // start sequential sample reading
         spi.transfer(write_buf,7,read_buf,7,spi_cb,SPI_EVENT_COMPLETE );
@@ -74,7 +74,7 @@ void readGyro() {
         y_samples[i] = ((float)raw_gy)*GYRO_SCALE_FACTOR;
         z_samples[i] = ((float)raw_gz)*GYRO_SCALE_FACTOR;
 
-        printf("%d/%d recorded... keep running...\n", i+1, (int)REQUIRED_IDX);
+        printf("%d/%d recorded... keep running...\n", i+1, REQUIRED_IDX);
         ThisThread::sleep_for(500ms);
     }    
 }
