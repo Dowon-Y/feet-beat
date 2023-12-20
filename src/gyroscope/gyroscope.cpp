@@ -19,10 +19,14 @@ SPI spi(PF_9, PF_8, PF_7,PC_1,use_gpio_ssel); // mosi, miso, sclk, cs
 
 #define SPI_FLAG 1
 
-#define GYRO_SCALE_FACTOR (17.5f * 0.017453292519943295769236907684886f / 1000.0f)
+#define PI_OVER_180 0.017453292519943295769236907684886f
+#define DPS_500_SENSITIVITY 17.5f
+#define GYRO_SCALE_FACTOR PI_OVER_180 * DPS_500_SENSITIVITY / 1000.0f
 
-#define SAMPLING_DURATION 20
-#define INTERVAL 0.5
+// TODO: change this back to 20s
+#define SAMPLING_DURATION 10 // for testing
+// #define SAMPLING_DURATION 20 // in second
+#define INTERVAL 0.5                                                                            
 #define REQUIRED_IDX (int)(SAMPLING_DURATION/INTERVAL)
 
 uint8_t write_buf[32]; 
@@ -30,9 +34,15 @@ uint8_t read_buf[32];
 
 EventFlags flags;
 
-float x_samples[REQUIRED_IDX];
-float y_samples[REQUIRED_IDX];
-float z_samples[REQUIRED_IDX];
+float data[REQUIRED_IDX];
+
+float traveledDistance = 0.0f;
+float averageSpeed = 0.0f;
+
+// move these to LCD screen control later
+float userHeightInCm = 178.0f;
+bool userIsMale = true;
+
 
 // callback for spi.transfer()
 void spi_cb(int event){
@@ -54,36 +64,64 @@ void initGyro() {
     flags.wait_all(SPI_FLAG); 
 }
 
-void readGyro() {
+float getLinearVelocity() {
     int16_t raw_gx,raw_gy,raw_gz;
+    float gx, gy, gz;
+
     //prepare the write buffer to trigger a sequential read
     write_buf[0]=OUT_X_L|0x80|0x40;
+    
+    // each iteration takes about 0.5 to sample the angular velocities
+    // start sequential sample reading
+    spi.transfer(write_buf,7,read_buf,7,spi_cb,SPI_EVENT_COMPLETE );
+    flags.wait_all(SPI_FLAG);
+    raw_gx = (((uint16_t)read_buf[2]) <<8) | ((uint16_t)read_buf[1]);
+    raw_gy = (((uint16_t)read_buf[4]) <<8) | ((uint16_t)read_buf[3]);
+    raw_gz = (((uint16_t)read_buf[6]) <<8) | ((uint16_t)read_buf[5]);
 
-    for (int i = 0; i < REQUIRED_IDX; i++) {
-        // each iteration takes about 0.5 to sample the angular velocities
-        // start sequential sample reading
-        spi.transfer(write_buf,7,read_buf,7,spi_cb,SPI_EVENT_COMPLETE );
-        flags.wait_all(SPI_FLAG);
-        //read_buf after transfer: garbage byte, gx_low,gx_high,gy_low,gy_high,gz_low,gz_high
-        //Put the high and low bytes in the correct order lowB,HighB -> HighB,LowB
-        raw_gx = (((uint16_t)read_buf[2]) <<8) | ((uint16_t)read_buf[1]);
-        raw_gy = (((uint16_t)read_buf[4]) <<8) | ((uint16_t)read_buf[3]);
-        raw_gz = (((uint16_t)read_buf[6]) <<8) | ((uint16_t)read_buf[5]);
+    gx = ((float)raw_gx)*GYRO_SCALE_FACTOR;
+    gy = ((float)raw_gy)*GYRO_SCALE_FACTOR;
+    gz = ((float)raw_gz)*GYRO_SCALE_FACTOR;
 
-        x_samples[i] = ((float)raw_gx)*GYRO_SCALE_FACTOR;
-        y_samples[i] = ((float)raw_gy)*GYRO_SCALE_FACTOR;
-        z_samples[i] = ((float)raw_gz)*GYRO_SCALE_FACTOR;
-
-        printf("%d/%d recorded... keep running...\n", i+1, REQUIRED_IDX);
-        ThisThread::sleep_for(500ms);
-    }    
+    // logic: we are going to put this device vertically in our pocket.
+    // so the angular velocity should be vector addition of x and z axis of the device
+    return sqrt(gx * gx + gz * gz);
 }
 
-void calcualteDistance() {
-    // TODO: implement this
-    for (int i = 0; i < (int)REQUIRED_IDX; i++) {
-        printf("%4.5f: \tgx: %4.5f \t gy: %4.5f \t gz: %4.5f\n", i, x_samples[i], y_samples[i], z_samples[i]);
+void startRecording() {
+    float spotSpeed = 0.0f;
+    for (int i = 0; i < REQUIRED_IDX; i++) {
+        ThisThread::sleep_for(500ms);
+        spotSpeed = getLinearVelocity();
+        data[i] = spotSpeed;
+        printf("[%d/%d] spot speed %4.5fm/s recorded. keep moving...\n", i+1, REQUIRED_IDX, spotSpeed);
     }
 }
 
+float getTraveledDistance() {
+    traveledDistance = 0.0f;
+    float legLength = getLegLengthInMeter();
+    for (int i = 0; i < REQUIRED_IDX; i++) {
 
+        traveledDistance += data[i] * legLength * 0.5;
+    }
+    printf("Traveled distance: %4.5fm\n", traveledDistance);
+    return traveledDistance;
+}
+
+float getAverageSpeed() {
+    averageSpeed = traveledDistance / SAMPLING_DURATION;
+    printf("Average speed: %4.5fm/s\n", averageSpeed);
+    return averageSpeed;
+}
+
+float getLegLengthInMeter() {
+    // average leg to body ratio is about 1.123 (male) 1.124 (female)
+    // source: https://psycnet.apa.org/fulltext/2010-01934-004.html
+    if (userIsMale) {
+        return userHeightInCm * (1.123f / (1.123f + 1.0f)) / 100.0f;
+    }
+    return userHeightInCm * (1.124f / (1.124f + 1.0f)) / 100.0f;
+}
+
+float* getSpeedData() { return data; }
