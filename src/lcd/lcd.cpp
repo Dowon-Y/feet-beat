@@ -78,7 +78,7 @@ void userGenderSetupDisplay() {
     uint8_t timeLeft = 7;
     lcd.DisplayStringAtLine(3, (uint8_t *)"If you are a woman,");
     lcd.DisplayStringAtLine(4, (uint8_t *)"hold the blue button in ");
-    // stat
+    lcd.DisplayStringAtLine(5, (uint8_t *)"(diff stat will be used)");
     while(!blueButtonPressed() && timeLeft > 0){
         sprintf(buf, "    %d seconds", timeLeft);
         lcd.DisplayStringAtLine(6, (uint8_t *)buf);
