@@ -134,6 +134,7 @@ void calculationDisplay() {
 }
 
 void finishedDisplay() {
+    lcd.Clear(LCD_COLOR_BLACK);
     lcd.DisplayStringAtLine(1, (uint8_t *)"Program terminated");
     lcd.DisplayStringAtLine(3, (uint8_t *)"Press button to ");
     lcd.DisplayStringAtLine(4, (uint8_t *)"restart...");
