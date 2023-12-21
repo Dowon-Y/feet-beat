@@ -23,11 +23,6 @@ SPI spi(PF_9, PF_8, PF_7,PC_1,use_gpio_ssel); // mosi, miso, sclk, cs
 #define DPS_500_SENSITIVITY 17.5f
 #define GYRO_SCALE_FACTOR PI_OVER_180 * DPS_500_SENSITIVITY / 1000.0f
 
-// TODO: change this back to 20s
-#define SAMPLING_DURATION 10 // for testing
-// #define SAMPLING_DURATION 20 // in second
-#define INTERVAL 0.5                                                                            
-#define REQUIRED_IDX (int)(SAMPLING_DURATION/INTERVAL)
 
 uint8_t write_buf[32]; 
 uint8_t read_buf[32];
@@ -37,12 +32,8 @@ EventFlags flags;
 float data[REQUIRED_IDX];
 
 float traveledDistance = 0.0f;
-float averageSpeed = 0.0f;
 
-// move these to LCD screen control later
-float userHeightInCm = 178.0f;
-bool userIsMale = true;
-
+float spotSpeed = 0.0f;
 
 // callback for spi.transfer()
 void spi_cb(int event){
@@ -83,18 +74,20 @@ float getLinearVelocity() {
     gy = ((float)raw_gy)*GYRO_SCALE_FACTOR;
     gz = ((float)raw_gz)*GYRO_SCALE_FACTOR;
 
-    // logic: we are going to put this device vertically in our pocket.
-    // so the angular velocity should be vector addition of x and z axis of the device
+    // logic: we are going to put this device vertically in our pockets or attach to our thighs.
+    // If we use thigh to measure the leg movement, we can still measure the angluar velocity of a leg
+    // and thigh movements are symmetrical so when the velocity has negative value to push the ground,
+    // the other leg will make about the same angular velocity in the other direction.
+    // so the angular velocity should be the absolute value of vector addition of x and z axis of the device
     return sqrt(gx * gx + gz * gz);
 }
 
 void startRecording() {
-    float spotSpeed = 0.0f;
+    spotSpeed = 0.0f;
     for (int i = 0; i < REQUIRED_IDX; i++) {
         ThisThread::sleep_for(500ms);
         spotSpeed = getLinearVelocity();
         data[i] = spotSpeed;
-        printf("[%d/%d] spot speed %4.5fm/s recorded. keep moving...\n", i+1, REQUIRED_IDX, spotSpeed);
     }
 }
 
@@ -102,26 +95,20 @@ float getTraveledDistance() {
     traveledDistance = 0.0f;
     float legLength = getLegLengthInMeter();
     for (int i = 0; i < REQUIRED_IDX; i++) {
-
         traveledDistance += data[i] * legLength * 0.5;
     }
-    printf("Traveled distance: %4.5fm\n", traveledDistance);
     return traveledDistance;
 }
 
 float getAverageSpeed() {
-    averageSpeed = traveledDistance / SAMPLING_DURATION;
-    printf("Average speed: %4.5fm/s\n", averageSpeed);
-    return averageSpeed;
+    return traveledDistance / SAMPLING_DURATION;
 }
 
 float getLegLengthInMeter() {
     // average leg to body ratio is about 1.123 (male) 1.124 (female)
     // source: https://psycnet.apa.org/fulltext/2010-01934-004.html
-    if (userIsMale) {
-        return userHeightInCm * (1.123f / (1.123f + 1.0f)) / 100.0f;
+    if (getUserIsMale()) {
+        return (float)getUserHeightInCm() * (1.123f / (1.123f + 1.0f)) / 100.0f;
     }
-    return userHeightInCm * (1.124f / (1.124f + 1.0f)) / 100.0f;
+    return (float)getUserHeightInCm() * (1.124f / (1.124f + 1.0f)) / 100.0f;
 }
-
-float* getSpeedData() { return data; }
